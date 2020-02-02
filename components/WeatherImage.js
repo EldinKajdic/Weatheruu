@@ -69,11 +69,10 @@ export default class WeatherImage extends Component {
     return (
       <View style={styles.iconView}>
         <Image
+          resizeMode="stretch"
           style={{
-            minWidth: 200,
-            minHeight: 200,
             maxWidth: 300,
-            maxHeight: 230
+            maxHeight: 240
           }}
           source={imageSource}
         />

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Image, View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import axios from "axios";
 import Header from "./Header";
 import TimerMixin from "react-timer-mixin";
@@ -11,20 +11,27 @@ export default class Home extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      city: 'Göteborg'
+    };
   }
 
   componentDidMount() {
-    this.getCurrentWeather();
+    this.getCurrentWeather(this.state.city);
     this.getCurrentTime();
     this.interval = setInterval(() => {
       this.getCurrentTime();
-      this.getCurrentWeather();
+      this.getCurrentWeather(this.state.city);
     }, 10000);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
+  }
+  
+  handleTextSubmitted = (city) => {
+    this.setState({city});
+    this.getCurrentWeather(city);
   }
 
   getCurrentTime() {
@@ -49,10 +56,10 @@ export default class Home extends Component {
     this.setState({ timestamp });
   }
 
-  getCurrentWeather() {
+  getCurrentWeather(city) {
     return axios
       .get(
-        "http://api.openweathermap.org/data/2.5/weather?q=Göteborg&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
+        "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
       )
       .then(res => {
         let weather = res.data;
@@ -108,6 +115,7 @@ export default class Home extends Component {
         <Header
           timestamp={this.state.timestamp}
           cityname={this.state.cityname}
+          handleTextSubmitted={this.handleTextSubmitted}
         />
         <View>
           <Text style={styles.subheader}>{this.state.temp}°</Text>
