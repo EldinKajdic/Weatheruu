@@ -3,6 +3,7 @@ import { Image, View, Text, StyleSheet } from "react-native";
 import { images } from "../models/images";
 
 export default class WeatherImage extends Component {
+  state = {};
   render() {
     var imageSource = "";
     switch (this.props.icon) {
@@ -31,7 +32,7 @@ export default class WeatherImage extends Component {
         imageSource = images.n13d;
         break;
       case "50d":
-        imageSource = images.n13d;
+        imageSource = images.n50d;
         break;
 
       case "01n":
@@ -62,7 +63,7 @@ export default class WeatherImage extends Component {
         imageSource = images.n50n;
         break;
       default:
-        imageSource = images.n50d;
+        imageSource = images.spinner;
         break;
     }
 
@@ -76,11 +77,14 @@ export default class WeatherImage extends Component {
           }}
           source={imageSource}
         />
-        <Text style={styles.description}>{this.props.description}</Text>
-        <Text style={styles.smallText}>
-          {this.props.humidity > 30
-            ? "Risk för regn: " + this.props.humidity + "%"
-            : ""}
+        <Text
+          style={
+            this.props.icon && this.props.icon.includes("d")
+              ? styles.description
+              : styles.description_night
+          }
+        >
+          {this.props.description}
         </Text>
       </View>
     );
@@ -102,5 +106,12 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     marginTop: "5%"
+  },
+  description_night: {
+    fontWeight: "bold",
+    fontSize: 25,
+    textAlign: "center",
+    marginTop: "5%",
+    color: "white"
   }
 });

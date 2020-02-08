@@ -1,38 +1,60 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ImageBackground } from "react-native";
 import axios from "axios";
 import Header from "./Header";
-import TimerMixin from "react-timer-mixin";
 import WeatherImage from "./WeatherImage";
 import Bottom from "./Bottom";
+import { AsyncStorage } from "react-native";
 
 export default class Home extends Component {
-  mixins = TimerMixin;
-
   constructor(props) {
     super(props);
-    this.state = {
-      city: 'Göteborg'
-    };
+    this.state = {};
+  }
+
+  async getCityFromStorage() {
+    try {
+      const value = await AsyncStorage.getItem("city");
+      if (value !== null) {
+        this.setState({ city: value });
+      } else {
+        this.setState({ city: value });
+      }
+    } catch (error) {
+      this.setState({ city: value });
+    }
+  }
+
+  async setCityToStorage(city) {
+    try {
+      await AsyncStorage.setItem("city", city);
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
   }
 
   componentDidMount() {
-    this.getCurrentWeather(this.state.city);
-    this.getCurrentTime();
-    this.interval = setInterval(() => {
-      this.getCurrentTime();
+    this.getCityFromStorage().then(() => {
       this.getCurrentWeather(this.state.city);
-    }, 10000);
+      this.getCurrentTime();
+      this.interval = setInterval(() => {
+        this.getCurrentTime();
+        this.getCurrentWeather(this.state.city);
+      }, 10000);
+    });
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
-  
-  handleTextSubmitted = (city) => {
-    this.setState({city});
+
+  handleTextSubmitted = city => {
+    city = city.trim();
+    this.setCityToStorage(city);
+    this.setState({ city });
     this.getCurrentWeather(city);
-  }
+  };
 
   getCurrentTime() {
     var today = new Date();
@@ -56,10 +78,14 @@ export default class Home extends Component {
     this.setState({ timestamp });
   }
 
+  getWeatherForecast() {}
+
   getCurrentWeather(city) {
     return axios
       .get(
-        "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
+        "http://api.openweathermap.org/data/2.5/weather?q=" +
+          city +
+          "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
       )
       .then(res => {
         let weather = res.data;
@@ -96,13 +122,16 @@ export default class Home extends Component {
           timezone: weather.timezone,
           visibility: weather.visibility,
           description:
-            weather.weather[0].description.charAt(0).toUpperCase() +
-            weather.weather[0].description.slice(1),
+            weather.weather[0].description == "dis"
+              ? "Dimma"
+              : weather.weather[0].description.charAt(0).toUpperCase() +
+                weather.weather[0].description.slice(1),
           icon: weather.weather[0].icon,
           info: weather.weather[0].main,
           windDeg: weather.wind.deg,
           windSpeed: weather.wind.speed
         });
+        this.props.handleCurrentCondition(this.state.icon);
       })
       .catch(err => {
         console.log("helvete" + err.message);
@@ -116,10 +145,25 @@ export default class Home extends Component {
           timestamp={this.state.timestamp}
           cityname={this.state.cityname}
           handleTextSubmitted={this.handleTextSubmitted}
+          icon={this.state.icon}
         />
         <View>
-          <Text style={styles.subheader}>{this.state.temp}°</Text>
-          <Text style={styles.breadtext}>
+          <Text
+            style={
+              this.state.icon && this.state.icon.includes("d")
+                ? styles.subheader
+                : styles.subheader_night
+            }
+          >
+            {this.state.temp}°
+          </Text>
+          <Text
+            style={
+              this.state.icon && this.state.icon.includes("d")
+                ? styles.breadtext
+                : styles.breadtext_night
+            }
+          >
             Känns som {this.state.feelslike}°
           </Text>
         </View>
@@ -133,6 +177,7 @@ export default class Home extends Component {
           temp_min={this.state.temp_min}
           sunrise={this.state.sunrise}
           sunset={this.state.sunset}
+          icon={this.state.icon}
         />
       </View>
     );
@@ -149,7 +194,18 @@ const styles = StyleSheet.create({
     marginTop: "5%",
     textAlign: "center"
   },
+  subheader_night: {
+    fontSize: 80,
+    fontWeight: "bold",
+    marginTop: "5%",
+    textAlign: "center",
+    color: "white"
+  },
   breadtext: {
     fontSize: 18
+  },
+  breadtext_night: {
+    fontSize: 18,
+    color: "white"
   }
 });

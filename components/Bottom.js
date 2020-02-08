@@ -39,18 +39,19 @@ export default class Bottom extends Component {
         </View>
       );
     } else {
+      var night = this.props.icon.includes("n");
       return (
         <View>
-          <Text style={styles.smallText}>
+          <Text style={night ? styles.smallText_night : styles.smallText}>
             Varmast idag: {this.props.temp_max}°
           </Text>
-          <Text style={styles.smallText}>
+          <Text style={night ? styles.smallText_night : styles.smallText}>
             Kallast idag: {this.props.temp_min}°
           </Text>
-          <Text style={styles.smallText}>
+          <Text style={night ? styles.smallText_night : styles.smallText}>
             {this.formatTimestamp(this.props.sunrise, "Sunrise")}
           </Text>
-          <Text style={styles.smallText}>
+          <Text style={night ? styles.smallText_night : styles.smallText}>
             {this.formatTimestamp(this.props.sunset, "Sunset")}
           </Text>
           <View style={styles.buttonLessContainer}>
@@ -74,8 +75,15 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 16
   },
+  smallText_night: {
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 4,
+    fontSize: 16,
+    color: "white"
+  },
   buttonMoreContainer: {
-    marginTop: 20
+    marginTop: 10
   },
   buttonLessContainer: {
     marginTop: 10
@@ -89,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   buttonText: {
-      fontWeight: 'bold',
-      fontSize: 20
+    fontWeight: "bold",
+    fontSize: 20
   }
 });

@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "Väderuu",
+    "name": "Weatheruu",
     "slug": "WeatherApp",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icons/ios/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
     "splash": {
-      "image": "./assets/splash/LaunchImage.launchimage/LaunchImage-750@2x~iphone6-portrait_750x1334.png",
+      "image": "./assets/splash/LaunchImage.launchimage/LaunchImage.png",
       "resizeMode": "contain",
       "backgroundColor": "#94bee6"
     },
@@ -20,7 +20,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.weatheruu",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.1"
     },
     "android": {
       "package": "com.example.weatheruu",

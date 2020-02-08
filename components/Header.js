@@ -11,11 +11,22 @@ export default class Header extends Component {
   state = {
     displayDefault: true
   };
+  constructor(props) {
+    super(props);
+  }
   render() {
     if (this.state.displayDefault) {
       return (
         <View>
-          <Text style={styles.timestamp}>{this.props.timestamp}</Text>
+          <Text
+            style={
+              this.props.icon && this.props.icon.includes("d")
+                ? styles.timestamp
+                : styles.timestamp_night
+            }
+          >
+            {this.props.timestamp}
+          </Text>
           <TouchableOpacity
             onPress={() => this.setState({ displayDefault: false })}
           >
@@ -28,19 +39,29 @@ export default class Header extends Component {
     } else {
       return (
         <View>
-          <Text style={styles.timestamp}>{this.props.timestamp}</Text>
+          <Text
+            style={
+              this.props.icon && this.props.icon.includes("d")
+                ? styles.timestamp
+                : styles.timestamp_night
+            }
+          >
+            {this.props.timestamp}
+          </Text>
           <View style={styles.headerView}>
             <TextInput
               style={styles.header}
               placeholder="Sök stad"
               autoCapitalize="words"
-              clearButtonMode
+              clearButtonMode="while-editing"
               autoFocus
               clearTextOnFocus
               selectTextOnFocus
               enablesReturnKeyAutomatically
               blurOnSubmit
-              onSubmitEditing={(text) => this.props.handleTextSubmitted(text.nativeEvent.text)}
+              onSubmitEditing={text =>
+                this.props.handleTextSubmitted(text.nativeEvent.text)
+              }
             ></TextInput>
           </View>
         </View>
@@ -60,11 +81,17 @@ const styles = StyleSheet.create({
     fontSize: 45,
     fontWeight: "bold",
     minWidth: 300,
-    textAlign: 'center'
+    textAlign: "center"
   },
   timestamp: {
     fontWeight: "bold",
     marginBottom: "2%",
     textAlign: "center"
+  },
+  timestamp_night: {
+    fontWeight: "bold",
+    marginBottom: "2%",
+    textAlign: "center",
+    color: "white"
   }
 });
