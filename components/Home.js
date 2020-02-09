@@ -1,15 +1,26 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  YellowBox,
+  ScrollView
+} from "react-native";
 import axios from "axios";
 import Header from "./Header";
 import WeatherImage from "./WeatherImage";
 import Bottom from "./Bottom";
 import { AsyncStorage } from "react-native";
+import Forecast from "./Forecast";
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    YellowBox.ignoreWarnings([
+      "VirtualizedLists should never be nested" // TODO: Remove when fixed
+    ]);
   }
 
   async getCityFromStorage() {
@@ -18,10 +29,10 @@ export default class Home extends Component {
       if (value !== null) {
         this.setState({ city: value });
       } else {
-        this.setState({ city: value });
+        this.setState({ city: "Los Angeles" });
       }
     } catch (error) {
-      this.setState({ city: value });
+      this.setState({ city: "Los Angeles" });
     }
   }
 
@@ -35,26 +46,41 @@ export default class Home extends Component {
   }
 
   componentDidMount() {
+    this.displayClock();
     this.getCityFromStorage().then(() => {
       this.getCurrentWeather(this.state.city);
-      this.getCurrentTime();
+      this.getWeatherForecast(this.state.city);
+      console.log("ropar första" + this.state.city);
       this.interval = setInterval(() => {
-        this.getCurrentTime();
-        this.getCurrentWeather(this.state.city);
-      }, 10000);
+        this.getCurrentWeather(this.state.cityname);
+        this.getWeatherForecast(this.state.cityname);
+      }, 60000);
     });
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
+    clearInterval(this.interval2);
   }
 
   handleTextSubmitted = city => {
     city = city.trim();
-    this.setCityToStorage(city);
-    this.setState({ city });
-    this.getCurrentWeather(city);
+    this.getCurrentWeather(city).then(res => {
+      if (city !== "" && res !== "Error") {
+        this.getWeatherForecast(city);
+        this.setCityToStorage(this.state.cityname);
+      } else {
+        this.setState({ city: this.state.cityname });
+      }
+    });
   };
+
+  displayClock() {
+    this.getCurrentTime();
+    this.interval2 = setInterval(() => {
+      this.getCurrentTime();
+    }, 500);
+  }
 
   getCurrentTime() {
     var today = new Date();
@@ -78,7 +104,24 @@ export default class Home extends Component {
     this.setState({ timestamp });
   }
 
-  getWeatherForecast() {}
+  getWeatherForecast(city) {
+    return axios
+      .get(
+        "http://api.openweathermap.org/data/2.5/forecast?q=" +
+          city +
+          "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
+      )
+      .then(res => {
+        let weather = res.data;
+        this.setState({
+          fc_forecastList: weather.list
+        });
+      })
+      .catch(err => {
+        console.log("helvete2: " + err.message);
+        return "Error";
+      });
+  }
 
   getCurrentWeather(city) {
     return axios
@@ -115,7 +158,7 @@ export default class Home extends Component {
             weather.main.temp_min.toFixed(0) == "-0"
               ? "0"
               : weather.main.temp_min.toFixed(0),
-          cityname: weather.name,
+          cityname: weather.name == "Stockholbma" ? "Stockholm" : weather.name,
           country: weather.sys.country,
           sunrise: weather.sys.sunrise,
           sunset: weather.sys.sunset,
@@ -132,55 +175,75 @@ export default class Home extends Component {
           windSpeed: weather.wind.speed
         });
         this.props.handleCurrentCondition(this.state.icon);
+        console.log(this.state.icon);
       })
       .catch(err => {
-        console.log("helvete" + err.message);
+        console.log("helvete: " + err.message);
+        return "Error";
       });
   }
 
   render() {
-    return (
-      <View style={styles.main}>
-        <Header
-          timestamp={this.state.timestamp}
-          cityname={this.state.cityname}
-          handleTextSubmitted={this.handleTextSubmitted}
-          icon={this.state.icon}
-        />
-        <View>
-          <Text
-            style={
-              this.state.icon && this.state.icon.includes("d")
-                ? styles.subheader
-                : styles.subheader_night
-            }
-          >
-            {this.state.temp}°
-          </Text>
-          <Text
-            style={
-              this.state.icon && this.state.icon.includes("d")
-                ? styles.breadtext
-                : styles.breadtext_night
-            }
-          >
-            Känns som {this.state.feelslike}°
-          </Text>
+    if (this.state.cityname) {
+      return (
+        <View style={styles.main}>
+          <Header
+            timestamp={this.state.timestamp}
+            cityname={this.state.cityname}
+            handleTextSubmitted={this.handleTextSubmitted}
+            icon={this.state.icon}
+          />
+          <View>
+            <Text
+              style={
+                this.state.icon && this.state.icon.includes("d")
+                  ? styles.subheader
+                  : styles.subheader_night
+              }
+            >
+              {this.state.temp}°
+            </Text>
+            <Text
+              style={
+                this.state.icon && this.state.icon.includes("d")
+                  ? styles.breadtext
+                  : styles.breadtext_night
+              }
+            >
+              Känns som {this.state.feelslike}°
+            </Text>
+          </View>
+          <WeatherImage
+            humidity={this.state.humidity}
+            description={this.state.description}
+            icon={this.state.icon}
+          />
+          <ScrollView>
+            <Forecast
+              icon={this.state.icon}
+              list={this.state.fc_forecastList}
+            />
+            <Bottom
+              temp_max={this.state.temp_max}
+              temp_min={this.state.temp_min}
+              sunrise={this.state.sunrise}
+              sunset={this.state.sunset}
+              icon={this.state.icon}
+              timezone={this.state.timezone}
+            />
+          </ScrollView>
         </View>
-        <WeatherImage
-          humidity={this.state.humidity}
-          description={this.state.description}
-          icon={this.state.icon}
-        />
-        <Bottom
-          temp_max={this.state.temp_max}
-          temp_min={this.state.temp_min}
-          sunrise={this.state.sunrise}
-          sunset={this.state.sunset}
-          icon={this.state.icon}
-        />
-      </View>
-    );
+      );
+    } else {
+      return (
+        <View style={styles.spinnerMain}>
+          <Image
+            style={styles.spinner}
+            source={require("../assets/images/spinner.gif")}
+          ></Image>
+        </View>
+      );
+    }
   }
 }
 
@@ -188,24 +251,36 @@ const styles = StyleSheet.create({
   main: {
     alignItems: "center"
   },
+  spinnerMain: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%"
+  },
   subheader: {
     fontSize: 80,
     fontWeight: "bold",
-    marginTop: "5%",
+    marginTop: "3%",
     textAlign: "center"
   },
   subheader_night: {
     fontSize: 80,
     fontWeight: "bold",
-    marginTop: "5%",
+    marginTop: "3%",
     textAlign: "center",
     color: "white"
   },
   breadtext: {
-    fontSize: 18
+    fontSize: 18,
+    fontWeight: "bold"
   },
   breadtext_night: {
     fontSize: 18,
-    color: "white"
+    color: "white",
+    fontWeight: "bold"
+  },
+  spinner: {
+    alignItems: "center",
+    justifyContent: "center"
   }
 });

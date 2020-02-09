@@ -1,29 +1,28 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Button, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default class Bottom extends Component {
   state = {
     displayMore: false
   };
 
-  formatTimestamp(timestamp, type) {
-    let currentTime = new Date().getHours();
+  componentDidUpdate() {
+    this.state.sunrise = this.formatTimestamp(this.props.sunrise, "Sunrise");
+    this.state.sunset = this.formatTimestamp(this.props.sunset, "Sunset");
+  }
+
+  formatTimestamp(timestamp, name) {
     let date = new Date(timestamp * 1000);
+    date.setSeconds(this.props.timezone);
     var hours = date.getHours();
     hours = hours.toString().length == 1 ? "0" + hours : hours;
     var minutes = "0" + date.getMinutes();
 
     var formattedTime = hours + ":" + minutes.substr(-2);
 
-    if (type === "Sunrise") {
-      return currentTime > date.getHours()
-        ? "Solen gick upp: " + formattedTime
-        : "Solen går upp: " + formattedTime;
-    } else {
-      return currentTime > date.getHours()
-        ? "Solen gick ned: " + formattedTime
-        : "Solen går ned: " + formattedTime;
-    }
+    return (
+      (name == "Sunrise" ? "Soluppgång: " : "Solnedgång: ") + formattedTime
+    );
   }
 
   render() {
@@ -41,18 +40,13 @@ export default class Bottom extends Component {
     } else {
       var night = this.props.icon.includes("n");
       return (
-        <View>
+        <View style={styles.button}>
           <Text style={night ? styles.smallText_night : styles.smallText}>
-            Varmast idag: {this.props.temp_max}°
+            Varmast idag: {this.props.temp_max}° Kallast idag:{" "}
+            {this.props.temp_min}°
           </Text>
           <Text style={night ? styles.smallText_night : styles.smallText}>
-            Kallast idag: {this.props.temp_min}°
-          </Text>
-          <Text style={night ? styles.smallText_night : styles.smallText}>
-            {this.formatTimestamp(this.props.sunrise, "Sunrise")}
-          </Text>
-          <Text style={night ? styles.smallText_night : styles.smallText}>
-            {this.formatTimestamp(this.props.sunset, "Sunset")}
+            {this.state.sunrise} {this.state.sunset}
           </Text>
           <View style={styles.buttonLessContainer}>
             <TouchableOpacity
@@ -73,28 +67,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 4,
-    fontSize: 16
+    fontSize: 14
   },
   smallText_night: {
     fontWeight: "bold",
     textAlign: "center",
     marginTop: 4,
-    fontSize: 16,
+    fontSize: 14,
     color: "white"
   },
   buttonMoreContainer: {
-    marginTop: 10
+    marginTop: 15,
+    alignItems: "center"
   },
   buttonLessContainer: {
-    marginTop: 10
+    marginTop: 4,
+    alignItems: "center"
   },
   displayButton: {
     borderWidth: 2,
     borderRadius: 50,
     backgroundColor: "#fbc02d",
-    padding: 12,
-    width: 150,
-    alignItems: "center"
+    padding: 4,
+    width: 120,
+    height: 45,
+    alignItems: "center",
+    justifyContent: 'center'
   },
   buttonText: {
     fontWeight: "bold",

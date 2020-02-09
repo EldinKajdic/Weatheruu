@@ -72,14 +72,14 @@ export default class WeatherImage extends Component {
         <Image
           resizeMode="stretch"
           style={{
-            maxWidth: 300,
-            maxHeight: 240
+            maxWidth: 200,
+            maxHeight: 180
           }}
           source={imageSource}
         />
         <Text
           style={
-            this.props.icon && this.props.icon.includes("d")
+            this.props.icon.includes("d")
               ? styles.description
               : styles.description_night
           }
@@ -99,13 +99,13 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   iconView: {
-    marginTop: "5%"
+    marginTop: "3%"
   },
   description: {
     fontWeight: "bold",
     fontSize: 25,
     textAlign: "center",
-    marginTop: "5%"
+    marginTop: "3%"
   },
   description_night: {
     fontWeight: "bold",

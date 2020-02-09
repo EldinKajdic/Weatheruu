@@ -9,18 +9,16 @@ import {
 
 export default class Header extends Component {
   state = {
-    displayDefault: true
+    displayDefault: true,
+    current: ""
   };
-  constructor(props) {
-    super(props);
-  }
   render() {
     if (this.state.displayDefault) {
       return (
         <View>
           <Text
             style={
-              this.props.icon && this.props.icon.includes("d")
+              this.props.icon.includes("d")
                 ? styles.timestamp
                 : styles.timestamp_night
             }
@@ -41,7 +39,7 @@ export default class Header extends Component {
         <View>
           <Text
             style={
-              this.props.icon && this.props.icon.includes("d")
+              this.props.icon.includes("d")
                 ? styles.timestamp
                 : styles.timestamp_night
             }
@@ -55,10 +53,23 @@ export default class Header extends Component {
               autoCapitalize="words"
               clearButtonMode="while-editing"
               autoFocus
-              clearTextOnFocus
+              onBlur={text => {
+                if (text.nativeEvent.text == "") {
+                  this.setState({ current: this.state.previous });
+                }
+              }}
+              onFocus={() => {
+                this.setState({ previous: this.props.cityname, current: "" });
+              }}
+              onChangeText={text => {
+                this.setState({ current: text });
+              }}
+              value={this.state.current}
               selectTextOnFocus
               enablesReturnKeyAutomatically
               blurOnSubmit
+              clearTextOnFocus
+              keyboardAppearance="dark"
               onSubmitEditing={text =>
                 this.props.handleTextSubmitted(text.nativeEvent.text)
               }

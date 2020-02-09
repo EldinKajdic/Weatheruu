@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, View, ImageBackground } from "react-native";
+import { StyleSheet, View, ImageBackground, ScrollView } from "react-native";
 import Home from "./components/Home";
 import { conditions } from "./models/conditions";
 
@@ -9,7 +9,6 @@ export default class App extends Component {
     this.state = {};
   }
   handleCurrentCondition = condition => {
-    console.log(condition);
     this.setState({ condition });
   };
   render() {
@@ -71,17 +70,19 @@ export default class App extends Component {
         imageSource = conditions.night_fog;
         break;
       default:
-        imageSource = conditions.light_rain;
+        imageSource = conditions.night_fog;
         break;
     }
     return (
-      <View style={styles.container}>
-        <ImageBackground source={imageSource} style={styles.overlay}>
-          <View style={styles.home}>
-            <Home handleCurrentCondition={this.handleCurrentCondition}></Home>
-          </View>
-        </ImageBackground>
-      </View>
+      <ScrollView keyboardShouldPersistTaps="never" scrollEnabled="false">
+        <View style={styles.container}>
+          <ImageBackground source={imageSource} style={styles.overlay}>
+            <View style={styles.home}>
+              <Home handleCurrentCondition={this.handleCurrentCondition}></Home>
+            </View>
+          </ImageBackground>
+        </View>
+      </ScrollView>
     );
   }
 }
