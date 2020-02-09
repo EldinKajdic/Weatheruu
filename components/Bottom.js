@@ -42,18 +42,18 @@ export default class Bottom extends Component {
       return (
         <View style={styles.button}>
           <Text style={night ? styles.smallText_night : styles.smallText}>
-            Varmast idag: {this.props.temp_max}° Kallast idag:{" "}
+            Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
             {this.props.temp_min}°
           </Text>
           <Text style={night ? styles.smallText_night : styles.smallText}>
-            {this.state.sunrise} {this.state.sunset}
+            {this.state.sunrise} | {this.state.sunset}
           </Text>
           <View style={styles.buttonLessContainer}>
             <TouchableOpacity
               onPress={() => this.setState({ displayMore: false })}
               style={styles.displayButton}
             >
-              <Text style={styles.buttonText}>Visa mindre</Text>
+              <Text style={styles.buttonText}>Dölj</Text>
             </TouchableOpacity>
           </View>
         </View>

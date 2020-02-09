@@ -86,6 +86,7 @@ export default class Forecast extends Component {
         <FlatList
           horizontal
           data={this.props.list}
+          initialNumToRender={5}
           renderItem={({ item }) => (
             <View style={styles.container}>
               <Text
