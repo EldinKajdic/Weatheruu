@@ -10,7 +10,9 @@ import Forecast from "./Forecast";
 export default class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      fetching: true
+    };
     YellowBox.ignoreWarnings([
       "VirtualizedLists should never be nested" // TODO: Remove when fixed
     ]);
@@ -42,7 +44,9 @@ export default class Home extends Component {
     this.displayClock();
     this.getCityFromStorage().then(() => {
       this.getCurrentWeather(this.state.city);
-      this.getWeatherForecast(this.state.city);
+      this.getWeatherForecast(this.state.city).then(() => {
+        this.setState({ fetching: false });
+      });
       this.interval = setInterval(() => {
         this.getCurrentWeather(this.state.cityname);
         this.getWeatherForecast(this.state.cityname);
@@ -53,6 +57,27 @@ export default class Home extends Component {
   componentWillUnmount() {
     clearInterval(this.interval);
     clearInterval(this.interval2);
+  }
+
+  getStyling(className) {
+    let day =
+      this.state.icon &&
+      this.state.icon.includes("d") &&
+      !this.state.icon.includes("10d");
+
+    switch (className) {
+      case "subheader":
+        if (day) {
+          return styles.subheader;
+        }
+        return styles.subheader_night;
+      case "breadtext": {
+        if (day) {
+          return styles.breadtext;
+        }
+        return styles.breadtext_night;
+      }
+    }
   }
 
   handleTextSubmitted = city => {
@@ -177,7 +202,7 @@ export default class Home extends Component {
   }
 
   render() {
-    if (this.state.cityname) {
+    if (!this.state.fetching) {
       return (
         <View style={styles.main}>
           <Header
@@ -186,26 +211,8 @@ export default class Home extends Component {
             handleTextSubmitted={this.handleTextSubmitted}
             icon={this.state.icon}
           />
-          <Text
-            style={
-              this.state.icon &&
-              this.state.icon.includes("d") &&
-              !this.state.icon.includes("10d")
-                ? styles.subheader
-                : styles.subheader_night
-            }
-          >
-            {this.state.temp}°
-          </Text>
-          <Text
-            style={
-              this.state.icon &&
-              this.state.icon.includes("d") &&
-              !this.state.icon.includes("10d")
-                ? styles.breadtext
-                : styles.breadtext_night
-            }
-          >
+          <Text style={this.getStyling("subheader")}>{this.state.temp}°</Text>
+          <Text style={this.getStyling("breadtext")}>
             Känns som {this.state.feelslike}°
           </Text>
           <WeatherImage
@@ -231,6 +238,7 @@ export default class Home extends Component {
             style={styles.spinner}
             source={require("../assets/images/spinner.gif")}
           ></Image>
+          <Text style={styles.loadingText}>Hämtar väder...</Text>
         </View>
       );
     }
@@ -271,6 +279,14 @@ const styles = StyleSheet.create({
   },
   spinner: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    maxHeight: 200,
+    maxWidth: 200
+  },
+  loadingText: {
+    marginTop: 20,
+    color: "white",
+    fontSize: 20,
+    fontStyle: "italic"
   }
 });

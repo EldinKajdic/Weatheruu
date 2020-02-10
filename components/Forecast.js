@@ -53,6 +53,11 @@ export default class Forecast extends Component {
           return styles.smallText;
         }
         return styles.smallText_night;
+      case "indicator":
+        if (day) {
+          return "black";
+        }
+        return "white";
       default:
         break;
     }
@@ -106,7 +111,7 @@ export default class Forecast extends Component {
       <View style={styles.container}>
         <FlatList
           data={this.props.list}
-          indicatorStyle="white"
+          indicatorStyle={this.getStyling("indicator")}
           decelerationRate={0}
           snapToInterval={380}
           snapToAlignment={"center"}
