@@ -12,24 +12,46 @@ export default class Header extends Component {
     displayDefault: true,
     current: ""
   };
+
+  getStyling(className) {
+    let day = this.props.icon.includes("d") && !this.props.icon.includes("10d");
+    switch (className) {
+      case "timestamp":
+        if (day) {
+          return styles.timestamp;
+        }
+        return styles.timestamp_night;
+      case "header":
+        if (day) {
+          return styles.header;
+        }
+        return styles.header_night;
+    }
+  }
+
+  getPlaceholderColor() {
+    let day = this.props.icon.includes("d") && !this.props.icon.includes("10d");
+    if (day) {
+      return "#454545";
+    } else {
+      return "#C7C7CD";
+    }
+  }
+
   render() {
     if (this.state.displayDefault) {
       return (
         <View>
-          <Text
-            style={
-              this.props.icon.includes("d")
-                ? styles.timestamp
-                : styles.timestamp_night
-            }
-          >
+          <Text style={this.getStyling("timestamp")}>
             {this.props.timestamp}
           </Text>
           <TouchableOpacity
             onPress={() => this.setState({ displayDefault: false })}
           >
             <View style={styles.headerView}>
-              <Text style={styles.header}>{this.props.cityname}</Text>
+              <Text style={this.getStyling("header")}>
+                {this.props.cityname}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -37,20 +59,15 @@ export default class Header extends Component {
     } else {
       return (
         <View>
-          <Text
-            style={
-              this.props.icon.includes("d")
-                ? styles.timestamp
-                : styles.timestamp_night
-            }
-          >
+          <Text style={this.getStyling("timestamp")}>
             {this.props.timestamp}
           </Text>
           <View style={styles.headerView}>
             <TextInput
-              style={styles.header}
+              style={this.getStyling("header")}
               placeholder="Sök stad"
               autoCapitalize="words"
+              placeholderTextColor={this.getPlaceholderColor()}
               clearButtonMode="while-editing"
               autoFocus
               onBlur={text => {
@@ -82,17 +99,21 @@ export default class Header extends Component {
 }
 
 const styles = StyleSheet.create({
-  headerView: {
-    backgroundColor: "#fbc02d",
-    borderRadius: 50,
-    padding: 14,
-    borderWidth: 2
-  },
   header: {
+    fontSize: 50,
+    fontWeight: "bold",
+    minWidth: 300,
+    textAlign: "center",
+    textShadowColor: "#454545",
+    textShadowRadius: 0,
+    fontStyle: "italic"
+  },
+  header_night: {
     fontSize: 45,
     fontWeight: "bold",
     minWidth: 300,
-    textAlign: "center"
+    textAlign: "center",
+    color: "white"
   },
   timestamp: {
     fontWeight: "bold",

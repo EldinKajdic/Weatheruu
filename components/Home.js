@@ -1,12 +1,5 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  YellowBox,
-  ScrollView
-} from "react-native";
+import { View, Text, StyleSheet, Image, YellowBox } from "react-native";
 import axios from "axios";
 import Header from "./Header";
 import WeatherImage from "./WeatherImage";
@@ -50,7 +43,6 @@ export default class Home extends Component {
     this.getCityFromStorage().then(() => {
       this.getCurrentWeather(this.state.city);
       this.getWeatherForecast(this.state.city);
-      console.log("ropar första" + this.state.city);
       this.interval = setInterval(() => {
         this.getCurrentWeather(this.state.cityname);
         this.getWeatherForecast(this.state.cityname);
@@ -97,6 +89,7 @@ export default class Home extends Component {
         .toUpperCase() +
       d.slice(1) +
       ", " +
+      (h.toString().length == 1 ? "0" : "") +
       h +
       ":" +
       (m.toString().length == 1 ? "0" : "") +
@@ -193,45 +186,42 @@ export default class Home extends Component {
             handleTextSubmitted={this.handleTextSubmitted}
             icon={this.state.icon}
           />
-          <View>
-            <Text
-              style={
-                this.state.icon && this.state.icon.includes("d")
-                  ? styles.subheader
-                  : styles.subheader_night
-              }
-            >
-              {this.state.temp}°
-            </Text>
-            <Text
-              style={
-                this.state.icon && this.state.icon.includes("d")
-                  ? styles.breadtext
-                  : styles.breadtext_night
-              }
-            >
-              Känns som {this.state.feelslike}°
-            </Text>
-          </View>
+          <Text
+            style={
+              this.state.icon &&
+              this.state.icon.includes("d") &&
+              !this.state.icon.includes("10d")
+                ? styles.subheader
+                : styles.subheader_night
+            }
+          >
+            {this.state.temp}°
+          </Text>
+          <Text
+            style={
+              this.state.icon &&
+              this.state.icon.includes("d") &&
+              !this.state.icon.includes("10d")
+                ? styles.breadtext
+                : styles.breadtext_night
+            }
+          >
+            Känns som {this.state.feelslike}°
+          </Text>
           <WeatherImage
             humidity={this.state.humidity}
             description={this.state.description}
             icon={this.state.icon}
           />
-          <ScrollView>
-            <Forecast
-              icon={this.state.icon}
-              list={this.state.fc_forecastList}
-            />
-            <Bottom
-              temp_max={this.state.temp_max}
-              temp_min={this.state.temp_min}
-              sunrise={this.state.sunrise}
-              sunset={this.state.sunset}
-              icon={this.state.icon}
-              timezone={this.state.timezone}
-            />
-          </ScrollView>
+          <Forecast icon={this.state.icon} list={this.state.fc_forecastList} />
+          <Bottom
+            temp_max={this.state.temp_max}
+            temp_min={this.state.temp_min}
+            sunrise={this.state.sunrise}
+            sunset={this.state.sunset}
+            icon={this.state.icon}
+            timezone={this.state.timezone}
+          />
         </View>
       );
     } else {
@@ -276,8 +266,8 @@ const styles = StyleSheet.create({
   },
   breadtext_night: {
     fontSize: 18,
-    color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    color: "white"
   },
   spinner: {
     alignItems: "center",

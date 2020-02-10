@@ -30,6 +30,34 @@ export default class Forecast extends Component {
     return dgr.toFixed(0) == "-0°" ? "0°" : dgr.toFixed(0) + "°";
   }
 
+  getStyling(className) {
+    let day =
+      this.props.icon.includes("d") &&
+      !this.props.icon.includes("04d") &&
+      !this.props.icon.includes("03d") &&
+      !this.props.icon.includes("10d");
+
+    switch (className) {
+      case "degreesText":
+        if (day) {
+          return styles.degreesText;
+        }
+        return styles.degreesText_night;
+      case "dateText":
+        if (day) {
+          return styles.dateText;
+        }
+        return styles.dateText_night;
+      case "smallText":
+        if (day) {
+          return styles.smallText;
+        }
+        return styles.smallText_night;
+      default:
+        break;
+    }
+  }
+
   getWeatherIcon(icon) {
     switch (icon) {
       case "01d":
@@ -76,62 +104,34 @@ export default class Forecast extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text
-          style={
-            this.props.icon.includes("d") ? styles.header : styles.header_night
-          }
-        >
-          Prognos 5 dagar
-        </Text>
         <FlatList
-          horizontal
           data={this.props.list}
+          indicatorStyle="white"
+          decelerationRate={0}
+          snapToInterval={380}
+          snapToAlignment={"center"}
+          horizontal={true}
           initialNumToRender={5}
           renderItem={({ item }) => (
             <View style={styles.container}>
-              <Text
-                style={
-                  this.props.icon.includes("d")
-                    ? styles.dateText
-                    : styles.dateText_night
-                }
-              >
-                {this.formatTimestamp(item.dt)}
-              </Text>
-              <Text
-                style={
-                  this.props.icon.includes("d")
-                    ? styles.degreesText
-                    : styles.degreesText_night
-                }
-              >
-                {this.formatDegrees(item.main.temp)}
-              </Text>
-              <Image
-                style={styles.icon}
-                source={this.getWeatherIcon(item.weather[0].icon)}
-              />
-              <Text
-                style={
-                  this.props.icon.includes("d")
-                    ? styles.smallText
-                    : styles.smallText_night
-                }
-              >
-                Känns som: {this.formatDegrees(item.main.feels_like)}
-              </Text>
-              <Text
-                style={
-                  this.props.icon.includes("d")
-                    ? styles.smallText
-                    : styles.smallText_night
-                }
-              >
-                {item.weather[0].description == "dis"
-                  ? "Dimma"
-                  : item.weather[0].description.charAt(0).toUpperCase() +
-                    item.weather[0].description.slice(1)}
-              </Text>
+              <View style={styles.component}>
+                <Text style={this.getStyling("dateText")}>
+                  {this.formatTimestamp(item.dt)}
+                </Text>
+                <Text style={this.getStyling("degreesText")}>
+                  {this.formatDegrees(item.main.temp)}
+                </Text>
+                <Image
+                  style={styles.icon}
+                  source={this.getWeatherIcon(item.weather[0].icon)}
+                />
+                <Text style={this.getStyling("smallText")}>
+                  {item.weather[0].description == "dis"
+                    ? "Dimma"
+                    : item.weather[0].description.charAt(0).toUpperCase() +
+                      item.weather[0].description.slice(1)}
+                </Text>
+              </View>
             </View>
           )}
           keyExtractor={item => item.dt_txt}
@@ -143,54 +143,50 @@ export default class Forecast extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 10,
+    maxHeight: 120,
+    marginLeft: 2
+  },
+  component: {
     alignItems: "center",
     textAlign: "center",
-    marginTop: 10
-  },
-  header: {
-    fontSize: 20
-  },
-  header_night: {
-    fontSize: 20,
-    color: "white"
+    width: 90,
+    maxWidth: 90,
+    marginRight: 3
   },
   dateText: {
     fontWeight: "bold",
-    fontSize: 16,
-    marginRight: 30,
-    marginLeft: 20
+    fontSize: 13
   },
   dateText_night: {
     fontWeight: "bold",
-    fontSize: 16,
-    marginRight: 30,
-    marginLeft: 20,
+    fontSize: 13,
     color: "white"
   },
   degreesText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold"
   },
   degreesText_night: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
     color: "white"
   },
   smallText: {
     textAlign: "center",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "bold"
   },
   smallText_night: {
     textAlign: "center",
-    fontSize: 15,
+    fontSize: 14,
     color: "white"
   },
   bold: {
     fontWeight: "bold"
   },
   icon: {
-    height: 40,
-    width: 40
+    height: 30,
+    width: 30
   }
 });

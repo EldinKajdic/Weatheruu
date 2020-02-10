@@ -58,7 +58,7 @@ export default class App extends Component {
         imageSource = conditions.hard_rain;
         break;
       case "10n":
-        imageSource = conditions.night_rain;
+        imageSource = conditions.sunny_dawn;
         break;
       case "11n":
         imageSource = conditions.lightning;

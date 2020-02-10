@@ -69,23 +69,23 @@ export default class WeatherImage extends Component {
 
     return (
       <View style={styles.iconView}>
-        <Image
-          resizeMode="stretch"
-          style={{
-            maxWidth: 200,
-            maxHeight: 180
-          }}
-          source={imageSource}
-        />
         <Text
           style={
-            this.props.icon.includes("d")
+            this.props.icon.includes("d") && !this.props.icon.includes("10d")
               ? styles.description
               : styles.description_night
           }
         >
           {this.props.description}
         </Text>
+        <Image
+          resizeMode="stretch"
+          style={{
+            maxWidth: 200,
+            maxHeight: 200
+          }}
+          source={imageSource}
+        />
       </View>
     );
   }
@@ -99,19 +99,19 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   iconView: {
-    marginTop: "3%"
+    marginTop: "5%"
   },
   description: {
     fontWeight: "bold",
     fontSize: 25,
     textAlign: "center",
-    marginTop: "3%"
+    marginTop: 5
   },
   description_night: {
     fontWeight: "bold",
     fontSize: 25,
     textAlign: "center",
-    marginTop: "5%",
+    marginTop: 5,
     color: "white"
   }
 });

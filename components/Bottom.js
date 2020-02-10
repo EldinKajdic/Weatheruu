@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export default class Bottom extends Component {
   state = {
@@ -26,39 +26,22 @@ export default class Bottom extends Component {
   }
 
   render() {
-    if (!this.state.displayMore) {
-      return (
-        <View style={styles.buttonMoreContainer}>
-          <TouchableOpacity
-            onPress={() => this.setState({ displayMore: true })}
-            style={styles.displayButton}
-          >
-            <Text style={styles.buttonText}>Visa mer</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      var night = this.props.icon.includes("n");
-      return (
-        <View style={styles.button}>
-          <Text style={night ? styles.smallText_night : styles.smallText}>
-            Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
-            {this.props.temp_min}°
-          </Text>
-          <Text style={night ? styles.smallText_night : styles.smallText}>
-            {this.state.sunrise} | {this.state.sunset}
-          </Text>
-          <View style={styles.buttonLessContainer}>
-            <TouchableOpacity
-              onPress={() => this.setState({ displayMore: false })}
-              style={styles.displayButton}
-            >
-              <Text style={styles.buttonText}>Dölj</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      );
-    }
+    let day =
+      this.props.icon.includes("d") &&
+      !this.props.icon.includes("04d") &&
+      !this.props.icon.includes("03d") &&
+      !this.props.icon.includes("10d");
+    return (
+      <View style={styles.container}>
+        <Text style={day ? styles.smallText : styles.smallText_night}>
+          Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
+          {this.props.temp_min}°
+        </Text>
+        <Text style={day ? styles.smallText : styles.smallText_night}>
+          {this.state.sunrise} | {this.state.sunset}
+        </Text>
+      </View>
+    );
   }
 }
 
@@ -72,30 +55,11 @@ const styles = StyleSheet.create({
   smallText_night: {
     fontWeight: "bold",
     textAlign: "center",
-    marginTop: 4,
+    marginTop: 6,
     fontSize: 14,
     color: "white"
   },
-  buttonMoreContainer: {
-    marginTop: 15,
+  container: {
     alignItems: "center"
-  },
-  buttonLessContainer: {
-    marginTop: 4,
-    alignItems: "center"
-  },
-  displayButton: {
-    borderWidth: 2,
-    borderRadius: 50,
-    backgroundColor: "#fbc02d",
-    padding: 4,
-    width: 120,
-    height: 45,
-    alignItems: "center",
-    justifyContent: 'center'
-  },
-  buttonText: {
-    fontWeight: "bold",
-    fontSize: 20
   }
 });
