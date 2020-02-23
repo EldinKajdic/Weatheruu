@@ -63,7 +63,8 @@ export default class Home extends Component {
     let day =
       this.state.icon &&
       this.state.icon.includes("d") &&
-      !this.state.icon.includes("10d");
+      !this.state.icon.includes("10d") &&
+      !this.state.icon.includes("50d");
 
     switch (className) {
       case "subheader":
@@ -236,7 +237,7 @@ export default class Home extends Component {
         <View style={styles.spinnerMain}>
           <Image
             style={styles.spinner}
-            source={require("../assets/images/spinner.gif")}
+            source={require("../assets/images/spinner2.gif")}
           ></Image>
           <Text style={styles.loadingText}>Hämtar väder...</Text>
         </View>
@@ -257,16 +258,17 @@ const styles = StyleSheet.create({
   },
   subheader: {
     fontSize: 80,
-    fontWeight: "bold",
-    marginTop: "3%",
-    textAlign: "center"
+    marginTop: "2%",
+    textAlign: "center",
+    marginLeft: 25,
+    fontWeight: 'bold'
   },
   subheader_night: {
     fontSize: 80,
-    fontWeight: "bold",
-    marginTop: "3%",
+    marginTop: "2%",
     textAlign: "center",
-    color: "white"
+    color: "white",
+    marginLeft: 25
   },
   breadtext: {
     fontSize: 18,
@@ -280,13 +282,12 @@ const styles = StyleSheet.create({
   spinner: {
     alignItems: "center",
     justifyContent: "center",
-    maxHeight: 200,
+    maxHeight: 80,
     maxWidth: 200
   },
   loadingText: {
     marginTop: 20,
-    color: "white",
     fontSize: 20,
-    fontStyle: "italic"
+    fontWeight: "bold"
   }
 });

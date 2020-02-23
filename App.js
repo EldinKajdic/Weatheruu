@@ -55,7 +55,7 @@ export default class App extends Component {
         imageSource = conditions.clouds_night;
         break;
       case "09n":
-        imageSource = conditions.hard_rain;
+        imageSource = conditions.night;
         break;
       case "10n":
         imageSource = conditions.sunny_dawn;
@@ -89,7 +89,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#90caf9",
+    backgroundColor: "transparent",
     alignItems: "center",
     minHeight: "100%"
   },

@@ -10,8 +10,8 @@
     "icon": "./assets/icons/ios/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
     "splash": {
       "image": "./assets/splash/LaunchImage.launchimage/LaunchImage.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#94bee6"
+      "resizeMode": "cover",
+      "backgroundColor": "#0e0e0e"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

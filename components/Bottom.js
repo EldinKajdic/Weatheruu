@@ -30,16 +30,21 @@ export default class Bottom extends Component {
       this.props.icon.includes("d") &&
       !this.props.icon.includes("04d") &&
       !this.props.icon.includes("03d") &&
-      !this.props.icon.includes("10d");
+      !this.props.icon.includes("10d") &&
+      !this.props.icon.includes("50d");
     return (
       <View style={styles.container}>
-        <Text style={day ? styles.smallText : styles.smallText_night}>
-          Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
-          {this.props.temp_min}°
-        </Text>
-        <Text style={day ? styles.smallText : styles.smallText_night}>
-          {this.state.sunrise} | {this.state.sunset}
-        </Text>
+        {this.state.sunrise && (
+          <Text style={day ? styles.smallText : styles.smallText_night}>
+            Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
+            {this.props.temp_min}°
+          </Text>
+        )}
+        {this.state.sunrise && (
+          <Text style={day ? styles.smallText : styles.smallText_night}>
+            {this.state.sunrise + " | " + this.state.sunset}
+          </Text>
+        )}
       </View>
     );
   }

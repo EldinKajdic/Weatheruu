@@ -27,7 +27,7 @@ export default class Forecast extends Component {
   }
 
   formatDegrees(dgr) {
-    return dgr.toFixed(0) == "-0°" ? "0°" : dgr.toFixed(0) + "°";
+    return dgr.toFixed(0) == "-0" ? "0°" : dgr.toFixed(0) + "°";
   }
 
   getStyling(className) {
@@ -35,7 +35,8 @@ export default class Forecast extends Component {
       this.props.icon.includes("d") &&
       !this.props.icon.includes("04d") &&
       !this.props.icon.includes("03d") &&
-      !this.props.icon.includes("10d");
+      !this.props.icon.includes("10d") &&
+      !this.props.icon.includes("50d");
 
     switch (className) {
       case "degreesText":

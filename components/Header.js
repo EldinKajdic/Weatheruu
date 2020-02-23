@@ -14,7 +14,10 @@ export default class Header extends Component {
   };
 
   getStyling(className) {
-    let day = this.props.icon.includes("d") && !this.props.icon.includes("10d");
+    let day =
+      this.props.icon.includes("d") &&
+      !this.props.icon.includes("10d") &&
+      !this.props.icon.includes("50d");
     switch (className) {
       case "timestamp":
         if (day) {
@@ -105,8 +108,7 @@ const styles = StyleSheet.create({
     minWidth: 300,
     textAlign: "center",
     textShadowColor: "#454545",
-    textShadowRadius: 0,
-    fontStyle: "italic"
+    textShadowRadius: 0
   },
   header_night: {
     fontSize: 45,
