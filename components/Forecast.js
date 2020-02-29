@@ -33,10 +33,8 @@ export default class Forecast extends Component {
   getStyling(className) {
     let day =
       this.props.icon.includes("d") &&
-      !this.props.icon.includes("04d") &&
-      !this.props.icon.includes("03d") &&
       !this.props.icon.includes("10d") &&
-      !this.props.icon.includes("50d");
+      !this.props.icon.includes("13d");
 
     switch (className) {
       case "degreesText":
@@ -87,7 +85,7 @@ export default class Forecast extends Component {
       case "01n":
         return images_static.n01n;
       case "02n":
-        return images_static.n02n;
+        return images_static.n03n;
       case "03n":
         return images_static.n03n;
       case "04n":

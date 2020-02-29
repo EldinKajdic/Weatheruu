@@ -6,28 +6,33 @@ import WeatherImage from "./WeatherImage";
 import Bottom from "./Bottom";
 import { AsyncStorage } from "react-native";
 import Forecast from "./Forecast";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      fetching: true
+      fetching: true,
+      location: null,
+      locationErrorMessage: null,
+      getByPosition: false
     };
     YellowBox.ignoreWarnings([
       "VirtualizedLists should never be nested" // TODO: Remove when fixed
     ]);
   }
-
   async getCityFromStorage() {
     try {
       const value = await AsyncStorage.getItem("city");
       if (value !== null) {
         this.setState({ city: value });
+        return true;
       } else {
-        this.setState({ city: "Los Angeles" });
+        return false;
       }
     } catch (error) {
-      this.setState({ city: "Los Angeles" });
+      return false;
     }
   }
 
@@ -40,17 +45,33 @@ export default class Home extends Component {
     }
   }
 
+  getLocation() {
+    this._getLocationAsync().then(loc => {
+      if (loc !== null) {
+        this.setState({
+          posLat: loc.coords.latitude,
+          posLon: loc.coords.longitude
+        });
+        this.getCurrentWeather(this.state.city, true);
+        this.getWeatherForecast(this.state.city, true);
+      }
+    });
+  }
+
   componentDidMount() {
     this.displayClock();
-    this.getCityFromStorage().then(() => {
-      this.getCurrentWeather(this.state.city);
-      this.getWeatherForecast(this.state.city).then(() => {
+    this.getCityFromStorage().then(res => {
+      if (!res) {
+        this.setState({ city: "Los Angeles" });
+      }
+      this.getCurrentWeather(this.state.city, false);
+      this.getWeatherForecast(this.state.city, false).then(() => {
         this.setState({ fetching: false });
+        this.interval = setInterval(() => {
+          this.getCurrentWeather(this.state.cityname, false);
+          this.getWeatherForecast(this.state.cityname, false);
+        }, 60000);
       });
-      this.interval = setInterval(() => {
-        this.getCurrentWeather(this.state.cityname);
-        this.getWeatherForecast(this.state.cityname);
-      }, 60000);
     });
   }
 
@@ -64,7 +85,7 @@ export default class Home extends Component {
       this.state.icon &&
       this.state.icon.includes("d") &&
       !this.state.icon.includes("10d") &&
-      !this.state.icon.includes("50d");
+      !this.state.icon.includes("13d");
 
     switch (className) {
       case "subheader":
@@ -81,16 +102,29 @@ export default class Home extends Component {
     }
   }
 
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      this.setState({
+        errorMessage: "Permission to access location was denied"
+      });
+      return null;
+    }
+
+    return await Location.getCurrentPositionAsync({});
+  };
+
   handleTextSubmitted = city => {
     city = city.trim();
-    this.getCurrentWeather(city).then(res => {
+    this.setState({ getByPosition: false });
+    this.getCurrentWeather(city, false).then(res => {
       if (city !== "" && res !== "Error") {
-        this.getWeatherForecast(city);
         this.setCityToStorage(this.state.cityname);
       } else {
         this.setState({ city: this.state.cityname });
       }
     });
+    this.getWeatherForecast(city, false);
   };
 
   displayClock() {
@@ -123,13 +157,23 @@ export default class Home extends Component {
     this.setState({ timestamp });
   }
 
-  getWeatherForecast(city) {
-    return axios
-      .get(
+  getWeatherForecast(city, getByPosition) {
+    let url = "";
+    if (getByPosition) {
+      url =
+        "http://api.openweathermap.org/data/2.5/forecast?lat=" +
+        this.state.posLat +
+        "&lon=" +
+        this.state.posLon +
+        "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    } else {
+      url =
         "http://api.openweathermap.org/data/2.5/forecast?q=" +
-          city +
-          "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
-      )
+        city +
+        "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    }
+    return axios
+      .get(url)
       .then(res => {
         let weather = res.data;
         this.setState({
@@ -142,13 +186,24 @@ export default class Home extends Component {
       });
   }
 
-  getCurrentWeather(city) {
-    return axios
-      .get(
+  getCurrentWeather(city, getByPosition) {
+    let url = "";
+    if (getByPosition) {
+      url =
+        "http://api.openweathermap.org/data/2.5/weather?lat=" +
+        this.state.posLat +
+        "&lon=" +
+        this.state.posLon +
+        "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    } else {
+      console.log("notgetby");
+      url =
         "http://api.openweathermap.org/data/2.5/weather?q=" +
-          city +
-          "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633"
-      )
+        city +
+        "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    }
+    return axios
+      .get(url)
       .then(res => {
         let weather = res.data;
         this.setState({
@@ -194,6 +249,10 @@ export default class Home extends Component {
           windSpeed: weather.wind.speed
         });
         this.props.handleCurrentCondition(this.state.icon);
+        if (this.state.getByPosition && this.state.cityname !== weather.name) {
+          console.log("entered");
+          this.setCityToStorage(this.state.cityname);
+        }
         console.log(this.state.icon);
       })
       .catch(err => {
@@ -239,7 +298,7 @@ export default class Home extends Component {
             style={styles.spinner}
             source={require("../assets/images/spinner2.gif")}
           ></Image>
-          <Text style={styles.loadingText}>Hämtar väder...</Text>
+          <Text style={styles.loadingText}>Loading</Text>
         </View>
       );
     }
@@ -261,14 +320,14 @@ const styles = StyleSheet.create({
     marginTop: "2%",
     textAlign: "center",
     marginLeft: 25,
-    fontWeight: 'bold'
+    fontWeight: "bold"
   },
   subheader_night: {
     fontSize: 80,
     marginTop: "2%",
     textAlign: "center",
     color: "white",
-    marginLeft: 25
+    marginLeft: 20
   },
   breadtext: {
     fontSize: 18,
@@ -282,12 +341,13 @@ const styles = StyleSheet.create({
   spinner: {
     alignItems: "center",
     justifyContent: "center",
-    maxHeight: 80,
-    maxWidth: 200
+    maxHeight: 120,
+    maxWidth: 150
   },
   loadingText: {
-    marginTop: 20,
     fontSize: 20,
-    fontWeight: "bold"
+    color: "white",
+    fontWeight: "500",
+    textAlign: "center"
   }
 });

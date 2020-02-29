@@ -21,10 +21,10 @@ export default class App extends Component {
         imageSource = conditions.sunny;
         break;
       case "03d":
-        imageSource = conditions.clouds;
+        imageSource = conditions.cloudy;
         break;
       case "04d":
-        imageSource = conditions.clouds;
+        imageSource = conditions.cloudy;
         break;
       case "09d":
         imageSource = conditions.hard_rain;
@@ -46,16 +46,16 @@ export default class App extends Component {
         imageSource = conditions.night;
         break;
       case "02n":
-        imageSource = conditions.cloudy;
+        imageSource = conditions.clouds;
         break;
       case "03n":
-        imageSource = conditions.cloudy;
+        imageSource = conditions.clouds;
         break;
       case "04n":
         imageSource = conditions.clouds_night;
         break;
       case "09n":
-        imageSource = conditions.night;
+        imageSource = conditions.clouds;
         break;
       case "10n":
         imageSource = conditions.sunny_dawn;
@@ -64,10 +64,10 @@ export default class App extends Component {
         imageSource = conditions.lightning;
         break;
       case "13n":
-        imageSource = conditions.night_snow;
+        imageSource = conditions.snowing_night;
         break;
       case "50n":
-        imageSource = conditions.night_fog;
+        imageSource = conditions.clouds_night;
         break;
       default:
         imageSource = conditions.night_fog;
@@ -89,7 +89,7 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "transparent",
+    backgroundColor: "#000000",
     alignItems: "center",
     minHeight: "100%"
   },

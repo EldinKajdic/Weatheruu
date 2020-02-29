@@ -5,13 +5,13 @@
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android", "web"],
-    "version": "1.0.5",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icons/ios/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
     "splash": {
-      "image": "./assets/splash/LaunchImage.launchimage/LaunchImage.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#0e0e0e"
+      "image": "./assets/images/static/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#94bee6"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -20,11 +20,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.example.weatheruu",
-      "buildNumber": "1.0.5"
+      "buildNumber": "1.0.8"
     },
     "android": {
       "package": "com.example.weatheruu",
       "versionCode": 1
+    },
+    "locales": {
+      "sv": "./languages/swedish.json"
     }
   }
 }

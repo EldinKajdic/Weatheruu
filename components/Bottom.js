@@ -28,10 +28,8 @@ export default class Bottom extends Component {
   render() {
     let day =
       this.props.icon.includes("d") &&
-      !this.props.icon.includes("04d") &&
-      !this.props.icon.includes("03d") &&
       !this.props.icon.includes("10d") &&
-      !this.props.icon.includes("50d");
+      !this.props.icon.includes("13d");
     return (
       <View style={styles.container}>
         {this.state.sunrise && (

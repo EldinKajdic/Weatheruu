@@ -73,7 +73,7 @@ export default class WeatherImage extends Component {
           style={
             this.props.icon.includes("d") &&
             !this.props.icon.includes("10d") &&
-            !this.props.icon.includes("50d")
+            !this.props.icon.includes("13d")
               ? styles.description
               : styles.description_night
           }
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     textAlign: "center",
     marginTop: 5,
-    marginBottom: 20
+    marginBottom: 10
   },
   description_night: {
     fontWeight: "bold",
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 5,
     color: "white",
-    marginBottom: 20
+    marginBottom: 10
   }
 });
