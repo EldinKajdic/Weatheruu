@@ -13,8 +13,48 @@ export default class Header extends Component {
     current: ""
   };
 
+  componentDidMount() {
+    this.displayClock();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  displayClock() {
+    this.getCurrentTime();
+    this.interval = setInterval(() => {
+      this.getCurrentTime();
+    }, 1000);
+  }
+
+  getCurrentTime() {
+    var today = new Date();
+    today.setTime(today.getTime() + this.props.timezone * 1000);
+    var h = today.getUTCHours();
+    var m = today.getMinutes();
+    var d = today.toLocaleDateString("sv-se", {
+      weekday: "long"
+    });
+
+    let timestamp =
+      d
+        .charAt(0)
+        .toString()
+        .toUpperCase() +
+      d.slice(1) +
+      ", " +
+      (h.toString().length == 1 ? "0" : "") +
+      h +
+      ":" +
+      (m.toString().length == 1 ? "0" : "") +
+      m;
+    this.setState({ timestamp });
+  }
+
   getStyling(className) {
     let day =
+      this.props.icon &&
       this.props.icon.includes("d") &&
       !this.props.icon.includes("10d") &&
       !this.props.icon.includes("13d");
@@ -47,7 +87,7 @@ export default class Header extends Component {
       return (
         <View>
           <Text style={this.getStyling("timestamp")}>
-            {this.props.timestamp}
+            {this.state.timestamp}
           </Text>
           <TouchableOpacity
             onPress={() => this.setState({ displayDefault: false })}
@@ -64,7 +104,7 @@ export default class Header extends Component {
       return (
         <View>
           <Text style={this.getStyling("timestamp")}>
-            {this.props.timestamp}
+            {this.state.timestamp}
           </Text>
           <View style={styles.headerView}>
             <TextInput
@@ -76,11 +116,16 @@ export default class Header extends Component {
               autoFocus
               onBlur={text => {
                 if (text.nativeEvent.text == "") {
-                  this.setState({ current: this.state.previous });
+                  this.setState({
+                    current: this.state.previous
+                  });
                 }
               }}
               onFocus={() => {
-                this.setState({ previous: this.props.cityname, current: "" });
+                this.setState({
+                  previous: this.props.cityname,
+                  current: ""
+                });
               }}
               onChangeText={text => {
                 this.setState({ current: text });

@@ -32,6 +32,7 @@ export default class Forecast extends Component {
 
   getStyling(className) {
     let day =
+      this.props.icon &&
       this.props.icon.includes("d") &&
       !this.props.icon.includes("10d") &&
       !this.props.icon.includes("13d");
@@ -116,6 +117,7 @@ export default class Forecast extends Component {
           snapToAlignment={"center"}
           horizontal={true}
           initialNumToRender={5}
+          nestedScrollEnabled={true}
           renderItem={({ item }) => (
             <View style={styles.container}>
               <View style={styles.component}>

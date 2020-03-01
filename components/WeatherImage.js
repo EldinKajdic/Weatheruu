@@ -71,6 +71,7 @@ export default class WeatherImage extends Component {
       <View style={styles.iconView}>
         <Text
           style={
+            this.props.icon &&
             this.props.icon.includes("d") &&
             !this.props.icon.includes("10d") &&
             !this.props.icon.includes("13d")

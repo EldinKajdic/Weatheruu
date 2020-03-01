@@ -27,6 +27,7 @@ export default class Bottom extends Component {
 
   render() {
     let day =
+      this.props.icon &&
       this.props.icon.includes("d") &&
       !this.props.icon.includes("10d") &&
       !this.props.icon.includes("13d");
