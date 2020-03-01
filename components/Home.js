@@ -196,7 +196,6 @@ export default class Home extends Component {
         this.state.posLon +
         "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
     } else {
-      console.log("notgetby");
       url =
         "http://api.openweathermap.org/data/2.5/weather?q=" +
         city +
