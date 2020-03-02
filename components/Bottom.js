@@ -6,11 +6,6 @@ export default class Bottom extends Component {
     displayMore: false
   };
 
-  componentDidUpdate() {
-    this.state.sunrise = this.formatTimestamp(this.props.sunrise, "Sunrise");
-    this.state.sunset = this.formatTimestamp(this.props.sunset, "Sunset");
-  }
-
   formatTimestamp(timestamp, name) {
     let date = new Date(timestamp * 1000);
     date.setSeconds(this.props.timezone);
@@ -33,15 +28,17 @@ export default class Bottom extends Component {
       !this.props.icon.includes("13d");
     return (
       <View style={styles.container}>
-        {this.state.sunrise && (
+        {this.props.sunrise && (
           <Text style={day ? styles.smallText : styles.smallText_night}>
             Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
             {this.props.temp_min}°
           </Text>
         )}
-        {this.state.sunrise && (
+        {this.props.sunrise && (
           <Text style={day ? styles.smallText : styles.smallText_night}>
-            {this.state.sunrise + " | " + this.state.sunset}
+            {this.formatTimestamp(this.props.sunrise, "Sunrise") +
+              " | " +
+              this.formatTimestamp(this.props.sunset, "Sunset")}
           </Text>
         )}
       </View>

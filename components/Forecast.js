@@ -5,7 +5,8 @@ import { images_static } from "../models/images-static";
 export default class Forecast extends Component {
   formatTimestamp(timestamp) {
     let date = new Date(timestamp * 1000);
-    var h = date.getHours();
+    date.setTime(date.getTime() + this.props.timezone * 1000);
+    var h = date.getUTCHours();
     var m = date.getMinutes();
     var d = date.toLocaleDateString("sv-se", {
       weekday: "short"

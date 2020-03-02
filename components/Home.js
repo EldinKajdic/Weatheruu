@@ -88,7 +88,7 @@ export default class Home extends Component {
       if (city !== "" && res !== "Error") {
         this.props.handleStorage({
           id: this.state.id,
-          city: city,
+          city: this.state.cityname,
           condition: this.state.icon
         });
       }
@@ -97,7 +97,6 @@ export default class Home extends Component {
   };
 
   getWeatherForecast(city, getByPosition) {
-    console.log(city + "GETTING BITCHES");
     // let url = "";
     // if (getByPosition) {
     //   url =
@@ -189,7 +188,7 @@ export default class Home extends Component {
             windDeg: weather.wind.deg,
             windSpeed: weather.wind.speed
           });
-          console.log("Icon" + this.state.icon);
+          console.log("Icon " + weather.weather[0].icon);
           return "Success";
         }
       })
@@ -218,7 +217,11 @@ export default class Home extends Component {
             description={this.state.description}
             icon={this.state.icon}
           />
-          <Forecast icon={this.state.icon} list={this.state.fc_forecastList} />
+          <Forecast
+            icon={this.state.icon}
+            list={this.state.fc_forecastList}
+            timezone={this.state.timezone}
+          />
           <Bottom
             temp_max={this.state.temp_max}
             temp_min={this.state.temp_min}

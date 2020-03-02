@@ -6,7 +6,8 @@ import {
   ScrollView,
   Dimensions,
   Text,
-  Image
+  Image,
+  Animated
 } from "react-native";
 import Home from "./components/Home";
 import { conditions } from "./models/conditions";
@@ -27,7 +28,7 @@ export default class App extends Component {
     this.getCitiesFromStorage().then(res => {
       if (res === null) {
         this.setState({
-          cities: [{ id: 5368361, city: "Los Angeles", condition: "01d" }]
+          cities: [{ id: 0, city: "Los Angeles", condition: "01d" }]
         });
       } else {
         this.setState({ cities: JSON.parse(res) });
@@ -41,8 +42,6 @@ export default class App extends Component {
   }
 
   handleStorage = weather => {
-    console.log("Adding..");
-    console.log(weather);
     if (weather) {
       let cities = [...this.state.cities];
       let index = cities.findIndex(c => c.id === weather.id);
@@ -55,8 +54,12 @@ export default class App extends Component {
           for (let i = cities.length - 1; cities.length > 5; i--) {
             cities.splice(i, 1);
           }
+        } else if (cities.some(c => c.id === 0)) {
+          let defaultIndex = cities.findIndex(c => c.id === 0);
+          cities.splice(defaultIndex, 1);
         }
       }
+      cities.forEach(s => console.log(s));
       this.setCityToStorage(JSON.stringify(cities));
       this.setState({ cities });
     }
@@ -154,6 +157,7 @@ export default class App extends Component {
             horizontal={true}
             pagingEnabled={true}
             showsHorizontalScrollIndicator={false}
+            scrollEnabled={this.state.cities.length > 1}
           >
             {this.state.cities.map(prop => {
               return (
@@ -168,6 +172,16 @@ export default class App extends Component {
                         city={prop.city}
                         handleStorage={this.handleStorage}
                       ></Home>
+                      {/* <Animated.View // we will animate the opacity of the dots later, so use Animated.View instead of View here
+                        key={prop.id} // we will use i for the key because no two (or more) elements in an array will have the same index
+                        style={{
+                          height: 10,
+                          width: 10,
+                          backgroundColor: "#595959",
+                          margin: 8,
+                          borderRadius: 5
+                        }}
+                      /> */}
                     </View>
                   </ImageBackground>
                 </View>
