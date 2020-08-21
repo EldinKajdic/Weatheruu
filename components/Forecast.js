@@ -8,7 +8,7 @@ export default class Forecast extends Component {
     date.setTime(date.getTime() + this.props.timezone * 1000);
     var h = date.getUTCHours();
     var m = date.getMinutes();
-    var d = date.toLocaleDateString("sv-se", {
+    var d = date.toLocaleDateString("en-US", {
       weekday: "short"
     });
 

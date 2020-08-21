@@ -15,17 +15,17 @@ export default class Home extends Component {
       location: null,
       locationErrorMessage: null,
       city: this.props.city,
-      fetching: true
+      fetching: true,
     };
     YellowBox.ignoreWarnings(["VirtualizedLists should never be nested"]);
   }
 
   getLocation() {
-    this._getLocationAsync().then(loc => {
+    this._getLocationAsync().then((loc) => {
       if (loc !== null) {
         this.setState({
           posLat: loc.coords.latitude,
-          posLon: loc.coords.longitude
+          posLon: loc.coords.longitude,
         });
         this.getCurrentWeather(this.state.city, true);
         this.getWeatherForecast(this.state.city, true);
@@ -74,7 +74,7 @@ export default class Home extends Component {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       this.setState({
-        errorMessage: "Permission to access location was denied"
+        errorMessage: "Permission to access location was denied",
       });
       return null;
     }
@@ -82,14 +82,14 @@ export default class Home extends Component {
     return await Location.getCurrentPositionAsync({});
   };
 
-  handleTextSubmitted = city => {
+  handleTextSubmitted = (city) => {
     city = city.trim();
-    this.getCurrentWeather(city, false).then(res => {
+    this.getCurrentWeather(city, false).then((res) => {
       if (city !== "" && res !== "Error") {
         this.props.handleStorage({
           id: this.state.id,
           city: this.state.cityname,
-          condition: this.state.icon
+          condition: this.state.icon,
         });
       }
     });
@@ -104,23 +104,22 @@ export default class Home extends Component {
     //     this.state.posLat +
     //     "&lon=" +
     //     this.state.posLon +
-    //     "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    //     "&units=metric&APPID=226fd91c4c5ca42a13fd514c65294633";
     // } else {
     let url =
       "http://api.openweathermap.org/data/2.5/forecast?q=" +
       city +
-      "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+      "&units=metric&APPID=226fd91c4c5ca42a13fd514c65294633";
     // }
     return axios
       .get(url)
-      .then(res => {
+      .then((res) => {
         let weather = res.data;
         this.setState({
-          fc_forecastList: weather.list
+          fc_forecastList: weather.list,
         });
       })
-      .catch(err => {
-        console.log("helvete2: " + err.message);
+      .catch((err) => {
         return "Error";
       });
   }
@@ -133,16 +132,16 @@ export default class Home extends Component {
     //     this.state.posLat +
     //     "&lon=" +
     //     this.state.posLon +
-    //     "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+    //     "&units=metric&APPID=226fd91c4c5ca42a13fd514c65294633";
     // } else {
     let url =
       "http://api.openweathermap.org/data/2.5/weather?q=" +
       city +
-      "&units=metric&lang=se&APPID=226fd91c4c5ca42a13fd514c65294633";
+      "&units=metric&APPID=226fd91c4c5ca42a13fd514c65294633";
     // }
     return axios
       .get(url)
-      .then(res => {
+      .then((res) => {
         if (res.data) {
           let weather = res.data;
           this.setState({
@@ -180,20 +179,18 @@ export default class Home extends Component {
             visibility: weather.visibility,
             description:
               weather.weather[0].description == "dis"
-                ? "Dimma"
+                ? "Fog"
                 : weather.weather[0].description.charAt(0).toUpperCase() +
                   weather.weather[0].description.slice(1),
             icon: weather.weather[0].icon,
             info: weather.weather[0].main,
             windDeg: weather.wind.deg,
-            windSpeed: weather.wind.speed
+            windSpeed: weather.wind.speed,
           });
-          console.log("Icon " + weather.weather[0].icon);
           return "Success";
         }
       })
-      .catch(err => {
-        console.log("helvete: " + err.message);
+      .catch((err) => {
         return "Error";
       });
   }
@@ -210,7 +207,7 @@ export default class Home extends Component {
           />
           <Text style={this.getStyling("subheader")}>{this.state.temp}°</Text>
           <Text style={this.getStyling("breadtext")}>
-            Känns som {this.state.feelslike}°
+            Feels like {this.state.feelslike}°
           </Text>
           <WeatherImage
             humidity={this.state.humidity}
@@ -240,29 +237,29 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   main: {
-    alignItems: "center"
+    alignItems: "center",
   },
   subheader: {
     fontSize: 80,
     marginTop: "2%",
     textAlign: "center",
     marginLeft: 25,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   subheader_night: {
     fontSize: 80,
     marginTop: "2%",
     textAlign: "center",
     color: "white",
-    marginLeft: 20
+    marginLeft: 20,
   },
   breadtext: {
     fontSize: 18,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   breadtext_night: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "white"
-  }
+    color: "white",
+  },
 });
