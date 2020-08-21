@@ -6,6 +6,6 @@ Weatheruu was created to make weather application users happier by presenting we
 
 In the application, an user can save up to five different favorite locations at the same time. After that, just scroll left or right and enjoy seeing the weather for the first time!
 
-The application is still under development. It was developed using React Native.
-
 ![](readme.gif)
+
+The application is still under development. It was developed using React Native.
