@@ -33,7 +33,7 @@ export default class Header extends Component {
     today.setTime(today.getTime() + this.props.timezone * 1000);
     var h = today.getUTCHours();
     var m = today.getMinutes();
-    var d = today.toLocaleDateString("sv-se", {
+    var d = today.toLocaleDateString("en-US", {
       weekday: "long"
     });
 
@@ -109,7 +109,7 @@ export default class Header extends Component {
           <View style={styles.headerView}>
             <TextInput
               style={this.getStyling("header")}
-              placeholder="Sök stad"
+              placeholder="Search..."
               autoCapitalize="words"
               placeholderTextColor={this.getPlaceholderColor()}
               clearButtonMode="while-editing"

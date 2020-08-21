@@ -16,7 +16,7 @@ export default class Bottom extends Component {
     var formattedTime = hours + ":" + minutes.substr(-2);
 
     return (
-      (name == "Sunrise" ? "Soluppgång: " : "Solnedgång: ") + formattedTime
+      (name == "Sunrise" ? "Sunrise: " : "Sunset: ") + formattedTime
     );
   }
 
@@ -30,7 +30,7 @@ export default class Bottom extends Component {
       <View style={styles.container}>
         {this.props.sunrise && (
           <Text style={day ? styles.smallText : styles.smallText_night}>
-            Varmast idag: {this.props.temp_max}° | Kallast idag:{" "}
+            Highest today: {this.props.temp_max}° | Lowest today:{" "}
             {this.props.temp_min}°
           </Text>
         )}
